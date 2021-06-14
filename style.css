@@ -1,4 +1,139 @@
 
+html, body {
+	height: 100%;
+	background-color: #444444;
+}
+
+ul.ba {
+    list-style-type: none;
+}
+
+.menButtons{
+	border: none;
+	cursor: pointer;
+	background: none;
+	color: burlywood;
+	font-size: 17px;
+}
+
+.custom-file-input::-webkit-file-upload-button {
+	visibility: hidden;
+}
+
+input[type='file'] {
+	color: transparent;
+  }
+
+.custom-file-input::before {
+	margin-left: 22px;
+	color: burlywood;
+	font-family: "Font Awesome 5 Free";
+   	content: "\f382";
+   	vertical-align: middle;
+	font-weight:900;
+	/*-webkit-user-select: none;*/
+	cursor: pointer;
+}
+
+
+li{
+	text-align: center;
+	color: burlywood;
+	margin: 18px auto;
+}
+
+#tools-box{
+	display: none;
+	color: ivory;
+	text-align: start;
+	font-family: Arial, Helvetica, sans-serif;
+	padding: 10px;
+	font-size: 15px;
+	font-weight: 300;
+}
+
+#media-box{
+	display: none;
+	color: ivory;
+	text-align: start;
+	font-family: Arial, Helvetica, sans-serif;
+	padding: 10px;
+	font-size: 15px;
+	font-weight: 300;
+	padding-top: 0;
+}
+
+.color-field{
+	cursor: pointer;
+	border-radius: 100px;
+	display: inline-block;
+	width: 20px;
+	height: 20px;
+	margin: 15px 5px 0 5px;
+}
+
+#color-box{
+	display: none;
+	color: ivory;
+	text-align: start;
+	font-family: Arial, Helvetica, sans-serif;
+	padding: 10px;
+	margin-top: 20px;
+	font-size: 15px;
+	font-weight: 300;
+}
+
+#font-size-box{
+	display: none;
+	color: ivory;
+	text-align: start;
+	font-family: Arial, Helvetica, sans-serif;
+	padding: 10px;
+	margin-top: 20px;
+	font-size: 15px;
+	font-weight: 300;
+}
+
+#pencil_width_id{
+	border: none;
+	margin: 15px auto;
+}
+
+#menubar{
+	float: left;
+	width: 60px;
+	background: #444444;
+	height: 100%;
+}
+
+#whiteboard{
+	float: left;
+	width: 74%;
+	background-color: #ffffff;
+	height: 100%;
+}
+
+#chatmat{
+	
+	float: left;
+	width: 26%;
+	background-color: #444444;
+	height: 100%;
+}
+
+.row{
+	height: 100%;
+	box-sizing: border-box;
+	padding-bottom: 7px;
+}
+
+.row:after {
+	content: "";
+	display: table;
+	clear: both;
+}
+
+
 #drawsection {
 	margin-top: 41px;
 	position: absolute;
@@ -6,16 +141,27 @@
 	width: 1000px;
 	left: 50%;
 	margin-left: -500px;
+	height: 90%;
+	overflow: hidden;
+}
+
+#drawsection2 {
+	background-color: rgb(253, 246, 236);
 	height: 100%;
-	overflow: none;
-	background: #fafafa;
+	overflow: hidden;
 }
 
 #canvas-container {
 	position: absolute;
 	height: 100%;
 	width: 100%;
-	overflow: none;
+	overflow: scroll;
+}
+
+#canvas-container2 {
+	height: 100%;
+	width: 100%;
+	overflow: scroll;
 }
 
 #canvas {
@@ -26,14 +172,20 @@
 	z-index: 0;
 }
 
+#canvas2 {
+	height: 100%;
+	width: 100%;
+	z-index: 0;
+}
+
 #tools {
 	width: 1000px;
 	position: absolute;
 	left: 50%;
 	margin-left: -500px;
-	/*border: 1px solid black;*/
+	border: 1px solid black;
 	height: 40px;
-	background-color: #bfbfbf;
+	background-color: white;
 	z-index: 10;
 }
 
@@ -106,6 +258,7 @@
 
 /* Cursors */
 .pencil_active {cursor: url(img/pencil.gif), auto;}
+.text_active {cursor: text;}
 .eraser_active {cursor: url(img/eraser.gif), auto;}
 .rectangle_active {cursor: crosshair;}
 .oval_active {cursor: crosshair;}

@@ -1,52 +1,44 @@
-/**
- * HTML5 Canvas Whiteboard
- * 
- * Authors:
- * Antti Hukkanen
- * Kristoffer Snabb
- * 
- * Aalto University School of Science and Technology
- * Course: T-111.2350 Multimediatekniikka / Multimedia Technology
- * 
- * Under MIT Licence
- * 
- */
+
 
 (function() {
-	
-/**
- * =============
- *     MODEL
- * =============
- */
+    let string = "";
 
-/* === BEGIN Event objects === */
-
-/* Begin path event */
 function BeginPath(x, y) {
     this.coordinates = [x, y];
     this.type="beginpath";
 	this.time = new Date().getTime();
 }
-/* Begin shape event */
+
+function BeginText(x, y , canvas) {
+    this.type = "beginText";
+    this.coordinates = [x, y];
+    this.canvas = canvas;
+    this.time = new Date().getTime();
+}
+
 function BeginShape(x, y, canvas) {
 	this.type = "beginshape";
 	this.canvas = canvas;
 	this.coordinates = [x, y];
 	this.time = new Date().getTime();
 }
-/* End path event */
+
+function CloseText() {
+    this.type = "closetext";
+	this.time = new Date().getTime();
+}
+
 function ClosePath() {
     this.type = "closepath";
 	this.time = new Date().getTime();
 }
-/* Point draw event */
+
 function DrawPathToPoint(x, y) {
     this.type = "drawpathtopoint";
     this.coordinates = [x, y];
     this.time = new Date().getTime();
 }
-/*Erase event */
+
 function Erase(x, y) {
     this.type = "erase";
     this.coordinates = [x, y];
@@ -54,7 +46,7 @@ function Erase(x, y) {
     this.width = 5;
     this.time = new Date().getTime();
 }
-/* Rectangle event */
+
 function Rectangle(sx, sy, ex, ey, canvas) {
 	this.type = "rectangle";
 	this.coordinates = [sx, sy, ex, ey];
@@ -67,19 +59,14 @@ function Oval(x, y, w, h, canvas) {
 	this.canvas = canvas;
 	this.time = new Date().getTime();
 }
-/* Storke style event */
+
 function StrokeStyle(color) {
     this.type = "strokestyle";
     this.color = color;
     this.time = new Date().getTime();
 }
-/* Zoom event */
-function Zoom(factor) {
-    this.type = "zoom";
-    this.factor = factor;
-    this.time = new Date().getTime();
-}
-/* Restore event */
+
+
 function Restore(canvas) {
 	this.type = "restore";
 	if (canvas !== undefined) {
@@ -87,23 +74,8 @@ function Restore(canvas) {
 	}
 	this.time = new Date().getTime();
 }
-/* Rotate event
-   angle in degrees
-*/
-function Rotate(angle) {
-    this.type = "rotate";
-    this.angle = angle;
-    this.time = new Date().getTime();
-}
-/* === END Event objects === */
 
 
-	
-/**
- * ====================
- *    STATIC CONTROL
- * ====================   
- */
 window.Whiteboard = {
 
     context: null,
@@ -115,12 +87,6 @@ window.Whiteboard = {
 
     drawColor: '#000000',
 
-    /**
-     * Initializes the script by setting the default
-     * values for parameters of the class.
-     * 
-     * @param canvasid The id of the canvas element used
-     */
     init: function(canvasid) {
 	    // set the canvas width and height
 	    // the offsetWidth and Height is default width and height
@@ -142,24 +108,30 @@ window.Whiteboard = {
 	    this.setStrokeStyle(col);
     },
 
-    /**
-     * Executes the event that matches the given event
-     * object
-     * 
-     * @param wbevent The event object to be executed.
-     * @param firstexecute tells the function if the event is new and
-     *          should be saved to this.events
-     * This object should be one of the model's event objects.
-     */
+            /* zahra start*/
+    change_range: function(range) {
+                this.context.lineWidth = range;
+    },
+    
+            /*zahra end */
+
     execute: function(wbevent, firstexecute) {
+        //console.log("execute running")
+        if (this.events.length > 0){
+            console.log(this.events[0]);
+        }
+        
         var type = wbevent.type;
         var wid;
         var hei;
         var tmp;
+        var x = 0;
         if(firstexecute || firstexecute === undefined) {
             wbevent.time = new Date().getTime();
             this.events.push(wbevent);
+            //x = wbevent.coordinates[0];
         }
+
 
         if(type === "beginpath") {
             this.context.beginPath();
@@ -168,20 +140,49 @@ window.Whiteboard = {
             this.context.stroke();
         } else if(type === "beginshape") {
 	        this.context.save();
-	        this.context.beginPath();
-        } else if (type === "drawpathtopoint") {  
+            this.context.beginPath();
+
+        } else if(type === "beginText"){  // FLAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAG
+            this.context.save();
+            //this.context.beginText();
+            var mouseX = 0;
+            var mouseY = 0;
+            var startingX = 0;
+        
+            Whiteboard.canvas.addEventListener("click" , function(e){
+                mouseX = e.pageX - Whiteboard.canvas.offsetLeft;
+                mouseY = e.pageY - Whiteboard.canvas.offsetTop;
+                startingX = mouseX;
+                
+                return false
+            }, false);
+        
+            document.addEventListener("keydown" , function(e){
+                Whiteboard.context.font = "16px Arial";
+                if (e.keyCode === 13){
+                    mouseX = startingX;
+                    mouseY += 20 //The size of font + 4
+                }
+                else{
+                    Whiteboard.context.fillText(e.key , mouseX , mouseY);
+                    mouseX += Whiteboard.context.measureText(e.key).width;
+                }
+                
+            }, false);
+            
+        }
+        else if (type === "drawpathtopoint") {  
             this.context.lineTo(wbevent.coordinates[0],
                            wbevent.coordinates[1]);
             this.context.stroke();
         } else if (type === "closepath") {
             this.context.closePath();
-        } else if(type === "strokestyle") {
+        } else if (type === "closetext") {
+            this.context.closeText();
+        }
+        
+        else if(type === "strokestyle") {
             this.context.strokeStyle = wbevent.color;
-        } else if(type === "zoom") {
-            var newWidth = this.canvas.offsetWidth * wbevent.factor;
-            var newHeight = this.canvas.offsetHeight * wbevent.factor;
-            this.canvas.style.width = newWidth + "px";
-            this.canvas.style.height = newHeight + "px";
         } else if (type === "restore") {
             wid = this.canvas.width;
             hei = this.canvas.height;
@@ -189,27 +190,6 @@ window.Whiteboard = {
 	        if (wbevent.canvas !== undefined) {
 		        this.context.drawImage(wbevent.canvas, 0, 0);
 	        }
-        } else if(type === "rotate") {
-            var radian = wbevent.angle * Math.PI / 180;
-            wid = this.canvas.width;
-            hei = this.canvas.height;
-            
-            tmp = document.createElement("canvas");
-            var tmpcnv = tmp.getContext('2d');
-            tmp.width = wid;
-            tmp.height = hei;
-            tmpcnv.drawImage(this.canvas, 0, 0);
-            
-            // TODO: Fix: the image blurs out after multiple rotations 
-            this.context.save();
-            this.context.clearRect(0, 0, wid, hei);
-            this.context.translate(wid/2,hei/2);
-            this.context.rotate(radian);
-            this.context.translate(-wid/2,-hei/2);
-            this.context.drawImage(tmp, 0, 0);
-            this.context.restore();
-            
-            tmp = tmpcnv = undefined;
         } else if (type === "erase") {
             this.context.clearRect(wbevent.coordinates[0],
                               wbevent.coordinates[1],
@@ -274,27 +254,35 @@ window.Whiteboard = {
         }
     },
 
-    /**
-     * Resolves the relative width and height of the canvas
-     * element. Relative parameters can vary depending on the
-     * zoom. Both are equal to 1 if no zoom is encountered.
-     * 
-     * @return An array containing the relative width as first
-     * element and relative height as second.
-     */
     getRelative: function() {
 	    return {width: this.canvas.width/this.canvas.offsetWidth,
 			    height: this.canvas.height/this.canvas.offsetHeight};
     },
 
-    /**
-     * Opens a new window and writes the canvas image data
-     * to an element of type "img" in the new windows html body.
-     * The image is written in the specified image form.
-     * 
-     * @param type The output image type.
-     * Alternatives: png, jpg/jpeg, bmp
-     */
+    upimg: function(){ /////////////////// fix the width and height of the 
+        let imgInput = document.getElementById('button_img');
+        imgInput.addEventListener('change', function(e) {
+          if(e.target.files) {
+            let imageFile = e.target.files[0]; //here we get the image file
+            var reader = new FileReader();
+            reader.readAsDataURL(imageFile);
+            reader.onloadend = function (e) {
+              var myImage = new Image(); // Creates image object
+              myImage.src = e.target.result; // Assigns converted image to image object
+              myImage.onload = function(ev) {
+                //var myCanvas = document.getElementById("myCanvas"); // Creates a canvas object
+                //var myContext = myCanvas.getContext("2d"); // Creates a contect object
+                //myCanvas.width = myImage.width; // Assigns image's width to canvas
+                //myCanvas.height = myImage.height; // Assigns image's height to canvas
+                Whiteboard.context.drawImage(myImage,0,0); // Draws the image on canvas
+                let imgData = Whiteboard.canvas.toDataURL("image/jpeg",0.75); // Assigns image base64 string in jpeg format to a variable
+              }
+            }
+          }
+        });
+    },
+
+
     saveAs: function(type) {
 	    if (type === undefined) {
 		    type = "png";
@@ -317,24 +305,13 @@ window.Whiteboard = {
     },
 
 
-    /* === BEGIN ACTIONS === */
 
-    /**
-     * Starts the animation action in the canvas. This clears
-     * the whole canvas and starts to execute actions from
-     * the action stack by calling Whiteboard.animatenext().
-     */
     animate: function() {
 	    Whiteboard.animationind = 0;
 	    Whiteboard.context.clearRect(0,0,Whiteboard.canvas.width,Whiteboard.canvas.height);
 	    Whiteboard.animatenext();
     },
 
-    /**
-     * This function animates the next event in the event 
-     * stack and waits for the amount of time between the 
-     * current and next event before calling itself again.
-     */
     animatenext: function() {
         if(Whiteboard.animationind === 0) {
             Whiteboard.execute(Whiteboard.events[0], false);
@@ -351,63 +328,48 @@ window.Whiteboard = {
         }
     },
 
-    /**
-     * Begins a drawing path.
-     * 
-     * @param x Coordinate x of the path starting point
-     * @param y Coordinate y of the path starting point
-     */
+
     beginPencilDraw: function(x, y) {
         var e = new BeginPath(x, y);
         Whiteboard.execute(e);
     },
 
-    /**
-     * Draws a path from the path starting point to the
-     * point indicated by the given parameters.
-     * 
-     * @param x Coordinate x of the path ending point
-     * @param y Coordinate y of the path ending point
-     */
+    beginText: function(x, y) {
+        var e = new BeginText(x, y);
+        Whiteboard.execute(e);
+    },
+
+ 
     pencilDraw: function(x, y) {
         var e = new DrawPathToPoint(x, y);
         Whiteboard.execute(e);
     },
 
-    /**
-     * Begins erasing path.
-     * 
-     * @param x Coordinate x of the path starting point
-     * @param y Coordinate y of the path starting point
-     */
+    Text: function(x, y) {
+        var tmp = document.createElement("canvas");
+        var tmpcnv = tmp.getContext('2d');
+        tmp.width = Whiteboard.canvas.width;
+        tmp.height = Whiteboard.canvas.height;
+        tmpcnv.font = "30px Arial";
+        tmpcnv.fillText(Whiteboard.canvas, 0, 0);
+	    var e = new BeginText(x, y, tmp);
+        Whiteboard.execute(e);
+        
+    },
+
+
     beginErasing: function(x, y) {
         var e = new BeginPath(x, y);
         Whiteboard.execute(e);
     },
 
-    /**
-     * Erases the point indicated by the given coordinates.
-     * Actually this doesn't take the path starting point
-     * into account but erases a rectangle at the given
-     * coordinates with width and height specified in the
-     * Erase object.
-     * 
-     * @param x Coordinate x of the path ending point
-     * @param y Coordinate y of the path ending point
-     */
+
     erasePoint: function(x, y) {
         var e = new Erase(x, y);
         Whiteboard.execute(e);
     },
 
-    /**
-     * Begins shape drawing. The shape starting point
-     * should be the point where user click the canvas the
-     * first time after choosing the shape tool.
-     * 
-     * @param x Coordinate x of the shape starting point
-     * @param y Coordinate y of the shape starting point
-     */
+
     beginShape: function(x, y) {
         var tmp = document.createElement("canvas");
         var tmpcnv = tmp.getContext('2d');
@@ -418,13 +380,7 @@ window.Whiteboard = {
 	    Whiteboard.execute(e);
     },
 
-    /**
-     * Draws a rectangle that has opposite corner to the
-     * shape starting point at the given point.
-     * 
-     * @param x Coordinate x of the shape ending point
-     * @param y Coordinate y of the shape ending point
-     */
+
     drawRectangle: function(x, y) {
 	    var i = Whiteboard.events.length - 1;
 	    while (i >= 0) {
@@ -439,15 +395,6 @@ window.Whiteboard = {
 	    }
     },
 
-    /**
-     * Draws an oval that has opposite corner to the
-     * shape starting point at the given point. The oval
-     * drawing can be visualized by the same way as drawing
-     * a rectangle but the corners are round.
-     * 
-     * @param x Coordinate x of the shape ending point
-     * @param y Coordinate y of the shape ending point
-     */
     drawOval: function(x, y) {
 	    var i = Whiteboard.events.length - 1;
 	    while (i >= 0) {
@@ -467,13 +414,7 @@ window.Whiteboard = {
 	    }
     },
 
-    /**
-     * Sets stroke style for the canvas. Stroke
-     * style defines the color with which every
-     * stroke should be drawn on the canvas.
-     * 
-     * @param color The wanted stroke color
-     */
+
     setStrokeStyle: function(color) {
 	    if (color != Whiteboard.drawColor) {
 		    var e = new StrokeStyle(color);
@@ -481,51 +422,9 @@ window.Whiteboard = {
 	    }
     },
 
-    /**
-     * Zooms in the canvas 50% of the current canvas size
-     * resulting a 150% image size.
-     */
-    zoomin: function() {
-        var e = new Zoom(1.5);
-        Whiteboard.execute(e);
-    },
 
-    /**
-     * Zooms out the canvas 50% of the current canvas size
-     * resulting a 50% image size.
-     */
-    zoomout: function() {
-        var e = new Zoom(0.5);
-        Whiteboard.execute(e);
-    },
 
-    /**
-     * Zooms the canvas amount specified by the factor
-     * parameter.
-     * 
-     * @param factor The zoom factor. > 1 if zooming in
-     * and < 1 if zooming out.
-     */
-    zoom: function(factor) {
-        var e = new Zoom(factor);
-        Whiteboard.execute(e);
-    },
 
-    /**
-     * Rotates the canvas by the degrees defined by
-     * the degree parameter.
-     * 
-     * @param degree The degree of the rotation event.
-     */
-    rotate: function(degree) {
-        var e = new Rotate(degree);
-        Whiteboard.execute(e);
-    },
-
-    /**
-     * This function redraws the entire canvas 
-     * according to the events in events.
-    */
     redraw: function() {
         //this.init();
 	    Whiteboard.context.clearRect(0,0,Whiteboard.canvas.width,Whiteboard.canvas.height);
