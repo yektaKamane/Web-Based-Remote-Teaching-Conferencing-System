@@ -40,6 +40,19 @@ attendees = {
       }
 
     },
+ 
+          /* newly added function below */
+
+    pushAttendee : function(username, role){
+      var div = document.createElement('div');
+      div.id = i;
+      div.innerHTML = username + "        (" + role + ")";
+      document.getElementById('chatmat').appendChild(div);
+      // $("#" +i).prepend('<i class="fa fa-userp" style="margin : 5px;"></i>');
+      $("#" + i ).css({"background-color": "#DBD7CB", "border": "none" , "border-radius" : "0px" , "margin" : "5px"  , "height" : "20px" , "padding" : "10px 20px", "vertical-align" : "middle" }); ;
+      $("#" + i).prepend('<div class="dropdown" style="float : right; "> <button class="button-user"> <i class="fa fa-ellipsis-v" style="float : right;"></i> </button> <div class="dropdown-content" class="dropdoen-left" style="right: 4px;left: auto;width:50px;background-color:white;" ><button class="dropdown-userbt chng-host">change to host</button><button class="dropdown-userbt chng-pres" >change to presenter</button> <button class="dropdown-userbt chng-mic" id="chng-mic" onclick="allow_mic(this)" value="#000" >Disable/Enalble mic</button> </div></div>');
+    
+    },
 
     allow_mic : function(){
       alert("disable or enable mic");
