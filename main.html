@@ -5,38 +5,49 @@
     <title></title>
     <link rel="stylesheet" type="text/css" href="reset.css" />
     <link rel="stylesheet" type="text/css" href="style.css" />
+    <link rel="stylesheet"  href="styleofproject.css" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 	<script src="js/libs/jquery-1.4.2.min.js" type="application/javascript"></script>
 	<script src="js/libs/jquery-ui-1.8.custom.min.js" type="application/javascript"></script>
 	<script src="js/libs/console.js" type="application/javascript"></script>
 	<script src="js/libs/base64.js" type="application/javascript"></script>
 	<script src="js/libs/canvas2image.js" type="application/javascript"></script>
 	<script src="js/whiteboard.js" type="application/javascript"></script>
-    
-    <script src="https://cdn.socket.io/3.1.3/socket.io.min.js" integrity="sha384-cPwlPLvBTa3sKAgddT6krw0cJat7egBga3DJepJyrLl4Q9/5WLra3rrnMcyTyOnh" crossorigin="anonymous"></script>
 
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
+
+    <script src="attendees.js" type="application/javascript"></script>
+    <script src="chat.js" type="application/javascript"></script>
     <script src="js/whiteboardui.jquery.js" type="application/javascript"></script> 
     <script src="https://kit.fontawesome.com/a076d05399.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-<script type="text/javascript">//<![CDATA[
-// Init the script after document ready
-$(document).ready(function(){
-	WhiteboardUi.init($("#canvas"));
-});
-//]]></script>
 
-<script>
+<script type="text/javascript">
+    $(document).ready(function(){
+	    WhiteboardUi.init($("#canvas"));
+        attendees.init();
+        groupChat.init();
+    });
+</script>
 
-const ws = new WebSocket('ws://localhost:8080');
 
-ws.addEventListener("open" , () => {
-    console.log("connected!");
-    ws.send(window.Whiteboard.events);
-});
+<script> 
+
+    /* All the data we have */
+
+    //console.log(window.Whiteboard.events)
+    //console.log(attendees.arrayVariable);
+    //console.log(attendees.arrayVariablerole);
+    //console.log(attendees.user_name);
+    //console.log(attendees.user_role);
+    //console.log(groupChat.mesgs);
 
 </script>
 
 </head>
-<body>
+<body onload='init()'>
 
     <div class="row">
         <div id="whiteboard">
@@ -85,7 +96,6 @@ ws.addEventListener("open" , () => {
 
                 </ul>
             </div>
-
             <div id="drawsection2">
                 <div id="canvas-container2">
                     <canvas id="canvas"></canvas>
@@ -94,11 +104,32 @@ ws.addEventListener("open" , () => {
 
         </div>
 
-        <div id="chatmat">
+        <div id="chatmat_main">
 
+            <div id="chatmat_upper">        <!--  The attendees list  -->
+                <div id="attendees_title">Attendees</div>
+                <div id="chatmat"></div>
+            </div>
+
+            <div id="chatmat_lower">  <!-- The chatbox -->
+                <div id="attendees_title"> Chatbox </div>
+                <div id="contain_chatbox">
+                    <div id="chatbox"></div>
+                </div>
+                <div id="input">
+                    <form action="" name="chatbox" style="height: 100%; width: 100%;">
+                      <textarea type="text" name="msg" id="msg" autocomplete="off" ></textarea>
+                    </form>
+                    <button class="subbt" type="submit" name="submsg" id="submsg" value="Send" style="display: none;">
+                      send
+                    </button>
+                </div>
+            </div>
+
+            </div>
         </div>
     </div>
-
+    
     <script>
         var flag = false; // false means the menu is NOT expanded
         function menuF(){
@@ -150,3 +181,42 @@ ws.addEventListener("open" , () => {
         </script>
 </body>
 </html>
+
+
+<script>
+    /** CONFIG **/
+    var SIGNALING_SERVER = "http://localhost";
+    var USE_AUDIO = true;
+    var USE_VIDEO = true;
+    var DEFAULT_CHANNEL = 'some-global-channel-name';
+    var MUTE_AUDIO_BY_DEFAULT = false;
+
+    /** You should probably use a different stun server doing commercial stuff **/
+    /** Also see: https://gist.github.com/zziuni/3741933 **/
+    var ICE_SERVERS = [
+        {url:"stun:stun.l.google.com:19302"}
+    ];
+</script>
+
+<script>
+    var signaling_socket = null;   /* our socket.io connection to our webserver */
+    var local_media_stream = null; /* our own microphone / webcam */
+    var peers = {};                /* keep track of our peer connections, indexed by peer_id (aka socket.io id) */
+    var peer_media_elements = {};  /* keep track of our <video>/<audio> tags, indexed by peer_id */
+
+
+    function init() {
+        console.log("Connecting to signaling server");
+        /*
+        signaling_socket = io(SIGNALING_SERVER);
+        signaling_socket = io();
+
+        signaling_socket.on('connect', function() {
+            console.log("Connected to signaling server");
+            signaling_socket.emit('whiteboard', { events : window.Whiteboard.events});
+
+        });
+        */
+
+    }
+</script>

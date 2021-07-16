@@ -87,7 +87,7 @@ window.WhiteboardUi = {
 		});
 
 		WhiteboardUi.getElement('button_text').mousedown(function(){ // not okay!!!
-			Whiteboard.setStrokeStyle(WhiteboardUi.getElement('input_color').attr("value"));
+			Whiteboard.setTextStyle(WhiteboardUi.getElement('input_color').attr("value"));
 			WhiteboardUi.activateText();
 		});
 
@@ -108,6 +108,7 @@ window.WhiteboardUi = {
 
             WhiteboardUi.getElement('red').mousedown(function() {
                 Whiteboard.setStrokeStyle(WhiteboardUi.getElement('red').attr("value"));
+				Whiteboard.setTextStyle(WhiteboardUi.getElement('red').attr("value"));
                 WhiteboardUi.activatePencil();
                 WhiteboardUi.shapeMenu();
                 $(".toggle-button").parent().find("ul").slideToggle(function() {

@@ -66,6 +66,12 @@ function StrokeStyle(color) {
     this.time = new Date().getTime();
 }
 
+function TextStyle(color) {
+    this.type = "textStyle";
+    this.color = color;
+    this.time = new Date().getTime();
+}
+
 
 function Restore(canvas) {
 	this.type = "restore";
@@ -106,6 +112,7 @@ window.Whiteboard = {
 	    var col = this.drawColor;
 	    this.drawColor = null;
 	    this.setStrokeStyle(col);
+        this.setTextStyle(col);
     },
 
             /* zahra start*/
@@ -117,8 +124,9 @@ window.Whiteboard = {
 
     execute: function(wbevent, firstexecute) {
         //console.log("execute running")
+    
         if (this.events.length > 0){
-            console.log(this.events[0]);
+            console.log(this.events);
         }
         
         var type = wbevent.type;
@@ -127,11 +135,10 @@ window.Whiteboard = {
         var tmp;
         var x = 0;
         if(firstexecute || firstexecute === undefined) {
+            //console.log(wbevent);
             wbevent.time = new Date().getTime();
             this.events.push(wbevent);
-            //x = wbevent.coordinates[0];
         }
-
 
         if(type === "beginpath") {
             this.context.beginPath();
@@ -142,33 +149,91 @@ window.Whiteboard = {
 	        this.context.save();
             this.context.beginPath();
 
-        } else if(type === "beginText"){  // FLAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAG
+        }else if(type === "text"){
+            //Whiteboard.context.clearRect(0,0, Whiteboard.canvas.width, Whiteboard.canvas.height);
+            console.log(wbevent.tarray);
+            array = wbevent.tarray;
+            var i = 0;
+            for (i=0; i<array.length; i++ ){
+
+                var imgData = array[i];
+                var img = new Image();
+
+                img.src = imgData;
+                img.onload = function(){
+                   // Whiteboard.context.clearRect(0,0, Whiteboard.canvas.width, Whiteboard.canvas.height);
+                    Whiteboard.context.drawImage(img, 0, 0, Whiteboard.canvas.width, Whiteboard.canvas.height, 0, 0, Whiteboard.canvas.width, Whiteboard.canvas.height);
+                }
+
+            }
+
+        }else if(type === "beginText"){  // FLAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAG
             this.context.save();
             //this.context.beginText();
             var mouseX = 0;
             var mouseY = 0;
             var startingX = 0;
+
+            var recentWords = [];
+            var undoList = []; // use this to initialize the canvas
+
+            /*console.log(undoList);
+            console.log(recentWords);*/
+
+            function saveState(){
+                undoList.push(Whiteboard.canvas.toDataURL());
+            }
+
+            saveState();
+
+            function undo(){
+                undoList.pop();
+
+                var imgData = undoList[undoList.length - 1];
+                var img = new Image();
+
+                img.src = imgData;
+                img.onload = function(){
+                    Whiteboard.context.clearRect(0,0, Whiteboard.canvas.width, Whiteboard.canvas.height);
+                    Whiteboard.context.drawImage(img, 0, 0, Whiteboard.canvas.width, Whiteboard.canvas.height, 0, 0, Whiteboard.canvas.width, Whiteboard.canvas.height);
+                }
+            }
         
             Whiteboard.canvas.addEventListener("click" , function(e){
                 mouseX = e.pageX - Whiteboard.canvas.offsetLeft;
                 mouseY = e.pageY - Whiteboard.canvas.offsetTop;
                 startingX = mouseX;
+
+                recentWords = [];
                 
                 return false
             }, false);
         
             document.addEventListener("keydown" , function(e){
-                Whiteboard.context.font = "16px Arial";
-                if (e.keyCode === 13){
+                Whiteboard.context.font = "18px Arial";
+                if (e.keyCode === 8){
+                    undo();
+                    var recentWord = recentWords[recentWords.length - 1];
+
+                    mouseX -= Whiteboard.context.measureText(recentWord).width;
+                    recentWords.pop();
+                }
+                else if (e.keyCode === 13){
                     mouseX = startingX;
-                    mouseY += 20 //The size of font + 4
+                    mouseY += 22 //The size of font + 4
                 }
                 else{
                     Whiteboard.context.fillText(e.key , mouseX , mouseY);
                     mouseX += Whiteboard.context.measureText(e.key).width;
+
+                    saveState();
+                    recentWords.push(e.key);
                 }
                 
             }, false);
+
+            const Textobj = {type:"text", tarray:undoList};
+            this.events.push(Textobj);
             
         }
         else if (type === "drawpathtopoint") {  
@@ -183,6 +248,10 @@ window.Whiteboard = {
         
         else if(type === "strokestyle") {
             this.context.strokeStyle = wbevent.color;
+        }
+        else if(type == "textStroke"){
+            this.context.textStyle = wbevent.color;
+
         } else if (type === "restore") {
             wid = this.canvas.width;
             hei = this.canvas.height;
@@ -274,11 +343,13 @@ window.Whiteboard = {
                 //var myContext = myCanvas.getContext("2d"); // Creates a contect object
                 //myCanvas.width = myImage.width; // Assigns image's width to canvas
                 //myCanvas.height = myImage.height; // Assigns image's height to canvas
+                //myImage.style.width = '800px';
                 Whiteboard.context.drawImage(myImage,0,0); // Draws the image on canvas
                 let imgData = Whiteboard.canvas.toDataURL("image/jpeg",0.75); // Assigns image base64 string in jpeg format to a variable
+                Whiteboard.events.push(imgData);
               }
             }
-          }
+          } 
         });
     },
 
@@ -322,9 +393,10 @@ window.Whiteboard = {
         Whiteboard.animationind++;
         
         if (Whiteboard.animationind < Whiteboard.events.length - 1) {
-            var now = new Date().getTime();
-	        var dtime = Whiteboard.events[Whiteboard.animationind+1].time - Whiteboard.events[Whiteboard.animationind].time;
-            setTimeout(Whiteboard.animatenext, dtime);
+            //var now = new Date().getTime();
+	        //var dtime = Whiteboard.events[Whiteboard.animationind+1].time - Whiteboard.events[Whiteboard.animationind].time;
+            //dtime = dtime / 1000;
+            setTimeout(Whiteboard.animatenext,0);
         }
     },
 
@@ -422,7 +494,12 @@ window.Whiteboard = {
 	    }
     },
 
-
+    setTextStyle: function(color) {
+	    if (color != Whiteboard.drawColor) {
+		    var e = new TextStyle(color);
+		    Whiteboard.execute(e);
+	    }
+    },
 
 
     redraw: function() {
