@@ -400,6 +400,12 @@ window.Whiteboard = {
         }
     },
 
+    draw_whiteboard: function(event_list) {
+        for (i=0; i<event_list.length; i++){
+            Whiteboard.execute(event_list[i], false);
+        }
+    },
+
 
     beginPencilDraw: function(x, y) {
         var e = new BeginPath(x, y);

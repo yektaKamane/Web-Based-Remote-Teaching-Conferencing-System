@@ -31,7 +31,7 @@ groupChat = {
     },
   
     send : function(){
-      //var msg = document.getElementById("msg");
+      var msg = document.getElementById("msg");
       if (msg.value.length > 0) {
         var newmsg = { user: this.username , text: msg.value };
         //this.mesgs.push(newmsg); // get a newmsg and push it

@@ -9,7 +9,6 @@ attendees = {
     
     init : function(){
       this.arrayLength = this.arrayVariable.length;
-
       for (i = 0; i < this.arrayLength; i++) {
    
         var div = document.createElement('div');
@@ -39,6 +38,28 @@ attendees = {
         $(".chng-mic").show();
       }
 
+    },
+
+    join : function(){
+      arrayVariable = ['ali hasani','mina nayernia','zahra sedaqat','mamad bastin','yekta kamane'];
+      arrayVariablerole = ['host','presenter','presenter','presenter','presenter'];
+    },
+
+
+    addUser : function(){
+      this.arrayVariable = arrayVariable;
+      this.arrayVariablerole = arrayVariablerole;
+      var username = document.getElementById("enter_username");
+      this.user_name = username;
+      this.role = "ordinary";
+      attendees.add_new_user(username, "ordinary");
+      //this.arrayVariable.push(username.value);
+      //this.arrayVariablerole.push('ordinary');
+    },
+
+    add_new_user : function(user_name, role){
+      this.arrayVariable.push(user_name.value);
+      this.arrayVariablerole.push(role);
     },
  
           /* newly added function below */
