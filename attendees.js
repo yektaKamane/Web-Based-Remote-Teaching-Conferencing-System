@@ -58,8 +58,19 @@ attendees = {
     },
 
     add_new_user : function(user_name, role){
+      //console.log("jj");
       this.arrayVariable.push(user_name.value);
       this.arrayVariablerole.push(role);
+      
+    },
+
+    remove_user : function(user_name){
+      this.arrayLength = this.arrayVariable.length;
+      for (i=0; i<this.arrayLength; i++){
+        if (this.arrayVariable[i] == user_name){
+          delete this.arrayVariable[i];
+        }
+      }
     },
  
           /* newly added function below */
