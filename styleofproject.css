@@ -152,3 +152,18 @@
 .presenter , .activete_mic , .leftslidebar , .button-user , .chng-host , .chng-pres , .chng-mic {
     display: none;
 }
+
+.export-attendees{
+    float: right;
+    margin-right: 30px;
+    padding: 5px 12px;
+    border: none;
+    /*
+    background-color:rgb(229, 196, 151);
+    color: black;*/
+    
+    background-color: #181818;
+    color:aliceblue;
+    cursor: pointer;
+    border-radius: 2px;
+}
