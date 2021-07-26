@@ -21,6 +21,7 @@ groupChat = {
             node.appendChild(textnode);
             this.chat_box.appendChild(node);
         }
+        document.getElementById("export-chat").addEventListener("click", this.export);
         document.getElementById("submsg").addEventListener("click", this.send);
         document.getElementById("msg").addEventListener("keypress",function(e){
             if (e.keyCode == 13) {
@@ -29,6 +30,35 @@ groupChat = {
             }
         })
     },
+
+    export : function(){
+      groupChat.CreateReport();
+    },
+
+    CreateReport : function (ReportName = ''){
+      var downloadLink;
+      var dataType = 'application/vnd.ms-excel';
+      ReportName = ReportName?ReportName+'.xls':''+'Chatlist.xls';//modify excle sheet name here 
+      downloadLink = document.createElement("a");
+      document.body.appendChild(downloadLink);
+      if(navigator.msSaveOrOpenBlob){
+          var blob = new Blob(['\ufeff'], {
+              type: dataType
+          });
+          navigator.msSaveOrOpenBlob( blob, ReportName);
+      }else{
+          downloadLink.href = 'data:' + dataType + ', ' ;
+          downloadLink.href += `<table><tbody>
+          <tr><th>Name</th><th>Message</th></tr>`;
+          for (i=0; i<this.mesgs.length; i++){
+            downloadLink.href += '<tr><td>' + this.mesgs[i].user + '</td>';
+            downloadLink.href += '<td>' + this.mesgs[i].text + '</td></tr>';
+          }
+          downloadLink.href += `</tbody><table>`;
+          downloadLink.download = ReportName;
+          downloadLink.click();
+      }
+  },
   
     send : function(){
       var msg = document.getElementById("msg");

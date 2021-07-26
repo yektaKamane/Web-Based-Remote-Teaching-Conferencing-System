@@ -1,7 +1,7 @@
 
 attendees = {
     //WhiteboardUi.init($("#canvas"));
-    arrayVariable : ['ali hasani','mina nayernia','zahra sedaqat','mamad bastin','yekta kamane'],
+    arrayVariable : ['Mitra Mansouri','mina nayernia','zahra sedaqat','mamad bastin','yekta kamane'],
     arrayLength : 0,
     arrayVariablerole : ['host','presenter','presenter','presenter','presenter'],
     user_role : "host",
@@ -37,6 +37,7 @@ attendees = {
         $(".button-user").show();
         $(".chng-mic").show();
       }
+      document.getElementById("export-att").addEventListener("click", this.export);
 
     },
 
@@ -85,6 +86,35 @@ attendees = {
       $("#" + i).prepend('<div class="dropdown" style="float : right; "> <button class="button-user"> <i class="fa fa-ellipsis-v" style="float : right;"></i> </button> <div class="dropdown-content" class="dropdoen-left" style="right: 4px;left: auto;width:50px;background-color:white;" ><button class="dropdown-userbt chng-host">change to host</button><button class="dropdown-userbt chng-pres" >change to presenter</button> <button class="dropdown-userbt chng-mic" id="chng-mic" onclick="allow_mic(this)" value="#000" >Disable/Enalble mic</button> </div></div>');
     
     },
+
+    export : function(){
+      attendees.CreateReport();
+    },
+
+    CreateReport : function (ReportName = ''){
+      var downloadLink;
+      var dataType = 'application/vnd.ms-excel';
+      ReportName = ReportName?ReportName+'.xls':''+'Attendeeslist.xls';//modify excle sheet name here 
+      downloadLink = document.createElement("a");
+      document.body.appendChild(downloadLink);
+      if(navigator.msSaveOrOpenBlob){
+          var blob = new Blob(['\ufeff'], {
+              type: dataType
+          });
+          navigator.msSaveOrOpenBlob( blob, ReportName);
+      }else{
+          downloadLink.href = 'data:' + dataType + ', ' ;
+          downloadLink.href += `<table><tbody>
+          <tr><th>Name</th><th>Role</th></tr>`;
+          for (i=0; i<this.arrayVariable.length; i++){
+            downloadLink.href += '<tr><td>' + this.arrayVariable[i] + '</td>';
+            downloadLink.href += '<td>' + this.arrayVariablerole[i] + '</td></tr>';
+          }
+          downloadLink.href += `</tbody><table>`;
+          downloadLink.download = ReportName;
+          downloadLink.click();
+      }
+  },
 
     allow_mic : function(){
       alert("disable or enable mic");

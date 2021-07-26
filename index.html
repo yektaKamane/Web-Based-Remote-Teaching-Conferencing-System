@@ -14,6 +14,7 @@
 	<script src="js/libs/base64.js" type="application/javascript"></script>
 	<script src="js/libs/canvas2image.js" type="application/javascript"></script>
 	<script src="js/whiteboard.js" type="application/javascript"></script>
+    
 
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
     <script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
@@ -47,7 +48,7 @@
 </script>
 
 </head>
-<body onload='init()'>
+<body>
 
     <div class="row">
         <div id="whiteboard">
@@ -107,12 +108,17 @@
         <div id="chatmat_main">
 
             <div id="chatmat_upper">        <!--  The attendees list  -->
-                <div id="attendees_title">Attendees</div>
+                <div id="attendees_title">Attendees 
+                    <button class="export-attendees" id="export-att">Export</button>
+                </div>
                 <div id="chatmat"></div>
             </div>
 
             <div id="chatmat_lower">  <!-- The chatbox -->
-                <div id="attendees_title"> Chatbox </div>
+                <div id="attendees_title"> Chatbox 
+                    <button class="export-attendees" id="export-chat">Export</button>
+                </div>
+                
                 <div id="contain_chatbox">
                     <div id="chatbox"></div>
                 </div>
