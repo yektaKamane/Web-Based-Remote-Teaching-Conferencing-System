@@ -255,3 +255,20 @@ li{
 .eraser_active {cursor: url(img/eraser.gif), auto;}
 .rectangle_active {cursor: crosshair;}
 .oval_active {cursor: crosshair;}
+
+.message {
+    padding-bottom: 5px;
+	padding-left: 10px;
+    display: flex;
+    flex-direction: row;
+    width: 450;
+}
+/* chat box */
+.msg-text {
+  min-width: 335px;
+  max-width: 335px;
+  
+}
+.scoresize{
+	max-height: 15px ;
+}
