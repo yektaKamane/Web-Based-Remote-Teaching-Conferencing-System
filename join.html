@@ -9,8 +9,42 @@
     <script src="chat.js" type="application/javascript"></script>
     <script src="js/libs/jquery-1.4.2.min.js" type="application/javascript"></script>
 	<script src="js/libs/jquery-ui-1.8.custom.min.js" type="application/javascript"></script>
-
-
+    <style>
+        body{
+            background-color: #444444;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+        .holder{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 600px;
+        }
+        #enter_username{
+            height: 40px;
+            width: 300px;
+            padding-left: 10px;
+        }
+        #submit_username{
+            font-size: 16px;
+            border: none;
+            background-color: #181818;
+            color:aliceblue;
+            cursor: pointer;
+            border-radius: 2px;
+            padding: 13px 25px;
+            margin-left: 10px;
+        }
+        h1{
+            width: 20%;
+            line-height: 1cm;
+            color: rgb(235, 211, 182);
+        }
+        .l2{
+            font-size: 19px;
+            font-weight: 100;
+        }
+    </style>
 
     <script type="text/javascript">
         $(document).ready(function(){
@@ -18,15 +52,18 @@
         });
     </script>
 </head>
-
-    <form>
-        <input type="text" id="enter_username">
-    </form>
-    <button type="submit" id="submit_username">Enter</button>
-
+<body>
+    <div class="holder">
+        <h1>Input your name <br> <span class="l2"> To enter the session </span> </h1>
+        <br>
+        <form>
+            <input type="text" id="enter_username">
+        </form>
+        <button type="submit" id="submit_username">Enter</button>
+    </div>
     <script type="text/javascript">
         document.getElementById("submit_username").addEventListener("click", attendees.addUser);
     </script>
+</body>
 
 </html>
-

@@ -54,9 +54,32 @@
 }
 
 #chatbox p{
+    width: 80%;
     background-color: #DBD7CB;
     padding: 10px 20px 0px 20px;
 }
+
+.message{
+    background-color: #DBD7CB;
+    display: flex;
+}
+
+.message form{
+    display: flex;
+    width: 50%;
+    /*margin-right: 0;*/
+    float: right;
+}
+
+.message form input{
+    margin-top: 4px;
+    width: 50px;
+}
+
+.IsTrue{
+    height:20px;
+}
+
 
 #new-page {
     background-color: wheat;
@@ -157,11 +180,7 @@
     float: right;
     margin-right: 30px;
     padding: 5px 12px;
-    border: none;
-    /*
-    background-color:rgb(229, 196, 151);
-    color: black;*/
-    
+    border: none;    
     background-color: #181818;
     color:aliceblue;
     cursor: pointer;
