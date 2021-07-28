@@ -384,7 +384,6 @@ window.Whiteboard = {
             });
             navigator.msSaveOrOpenBlob( blob, ReportName);
         }else{
-            //downloadLink.href = 'data:' + dataType + ', ' ;
             downloadLink.href = img;
             downloadLink.download = ReportName;
             downloadLink.click();

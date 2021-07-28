@@ -129,7 +129,6 @@
     position: absolute;
     min-width: 160px;
     z-index: 16;
-    
 }
 
 .dropdown:hover .dropdown-content {
@@ -152,7 +151,6 @@
 #export-box {
     position: relative;
     width: 100%;
-    color: red;
     margin-bottom: 30px;
 }
 
@@ -160,22 +158,25 @@
     float : right;
     border: none;
     background:none ;
-    
+    cursor: pointer;
 }
 
 .dropdown-userbt{
     box-sizing: content-box;
     width: 140px;
-    font-size: 12px;
-    padding: 5px auto;
-    background-color: #444444;
-    color: white;
+    font-size: 14px;
+    padding: 6px;
+    background-color: #292929;
+    color: rgb(170, 170, 170);
     border: none;
-    margin: 0;
+}
+.dropdown-userbt:hover{
+    cursor: pointer;
+    color: white;
 }
 
 .presenter , .activete_mic , .leftslidebar , .button-user , .chng-host , .chng-pres , .chng-mic {
-    display: none;
+    display: inline;
 }
 
 .export-attendees{
